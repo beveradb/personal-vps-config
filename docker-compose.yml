@@ -1,0 +1,59 @@
+version: "3.3"
+
+services:
+
+  traefik:
+    image: traefik:v2.0
+    container_name: "traefik"
+    command:
+      #- "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.mytlschallenge.acme.tlschallenge=true"
+      - "--certificatesresolvers.mytlschallenge.acme.email=andrew@beveridge.uk"
+      - "--certificatesresolvers.mytlschallenge.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - "./letsencrypt:/letsencrypt"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+  whoami:
+    image: "containous/whoami"
+    container_name: "simple-service"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.whoami.rule=Host(`beveradb.com`)"
+      - "traefik.http.routers.whoami.entrypoints=websecure"
+      - "traefik.http.routers.whoami.tls.certresolver=mytlschallenge"
+      # middleware redirect  
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"  
+      # global redirect to https  
+      - "traefik.http.routers.redirs.rule=hostregexp(`{host:.+}`)"  
+      - "traefik.http.routers.redirs.entrypoints=web"  
+      - "traefik.http.routers.redirs.middlewares=redirect-to-https"  
+
+  homeareainfo:
+    image: "homeareainfo"
+    container_name: "homeareainfo"
+    environment:
+      - MAPBOX_ACCESS_TOKEN
+      - TRAVELTIME_API_KEY
+      - TRAVELTIME_APP_ID
+      - GMAPS_API_KEY
+      - HOMEAREA_DEBUG
+    volumes:
+      - /tmp/hah-datasets:/app/datasets
+      - /tmp/hah-caches:/app/caches
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.homeareainfo.rule=Host(`homearea.info`)"
+      - "traefik.http.routers.homeareainfo.entrypoints=websecure"
+      - "traefik.http.routers.homeareainfo.tls.certresolver=mytlschallenge"
+
+
