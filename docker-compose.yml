@@ -5,6 +5,7 @@ services:
   traefik:
     image: traefik:v2.0
     container_name: "traefik"
+    restart: always
     command:
       #- "--log.level=DEBUG"
       - "--api.insecure=true"
@@ -26,6 +27,7 @@ services:
   whoami:
     image: "containous/whoami"
     container_name: "simple-service"
+    restart: always
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.whoami.rule=Host(`beveradb.com`)"
@@ -41,6 +43,7 @@ services:
   homeareainfo:
     image: "homeareainfo"
     container_name: "homeareainfo"
+    restart: always
     environment:
       - MAPBOX_ACCESS_TOKEN
       - TRAVELTIME_API_KEY
@@ -48,8 +51,8 @@ services:
       - GMAPS_API_KEY
       - HOMEAREA_DEBUG
     volumes:
-      - /tmp/hah-datasets:/app/datasets
-      - /tmp/hah-caches:/app/caches
+      - /root/hah-data/datasets:/app/datasets
+      - /root/hah-data/caches:/app/caches
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.homeareainfo.rule=Host(`homearea.info`)"
