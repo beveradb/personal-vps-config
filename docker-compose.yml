@@ -59,4 +59,35 @@ services:
       - "traefik.http.routers.homeareainfo.entrypoints=websecure"
       - "traefik.http.routers.homeareainfo.tls.certresolver=mytlschallenge"
 
+  i2p:
+    image: geti2p/i2p
+    container_name: i2p
+    restart: always
+    ports:
+      - 2827:2827 # — BOB
+      - 4444:4444 #— eepSite proxy
+      - 4444:4444/udp #— eepSite proxy
+      - 6668:6668 #— Irc2P proxy
+      - 7650:7650 #— I2PControl
+      - 7654:7654 #— I2CP
+      - 7655:7655 #— SAM (UDP)
+      - 7656:7656 #— SAM (TCP)
+      - 7657:7657 #— Router console
+      - 7658:7658 #— eepSite
+      - 7659:7659 #— SMTP
+      - 7660:7660 #— POP3
+      - 7661:7661 #— I2P-Bote SMTP
+      - 7662:7662 #— I2P-Bote IMAP / Zzzot
+      - 8998:8998 #— Monotone Proxy
+      - 8998:8998/udp #— Monotone Proxy
+      - 21774:21774 # TCP+UDP public port
+      - 21774:21774/udp # TCP+UDP public port
+    volumes:
+      - /root/i2p-data:/var/lib/i2p
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.homeareainfo.rule=Host(`i2p.beveradb.com`)"
+      - "traefik.http.routers.homeareainfo.entrypoints=websecure"
+      - "traefik.http.routers.homeareainfo.tls.certresolver=mytlschallenge"
+
 
