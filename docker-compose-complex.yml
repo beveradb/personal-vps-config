@@ -1,0 +1,124 @@
+version: "3.3"
+
+services:
+
+  traefik:
+    image: traefik:v2.0
+    container_name: "traefik"
+    restart: always
+    command:
+      - "--log.level=DEBUG"
+      - "--accesslog=true"
+      - "--tracing=true"
+      - "--tracing.jaeger=true"
+      - "--tracing.jaeger.localagenthostport=jaeger:6831"
+      - "--tracing.jaeger.samplingserverurl=http://jaeger:5778/sampling"
+      - "--metrics.prometheus=true"
+      - "--metrics.prometheus.buckets=0.1,0.3,1.2,5.0"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.mytlschallenge.acme.tlschallenge=true"
+      - "--certificatesresolvers.mytlschallenge.acme.email=andrew@beveridge.uk"
+      - "--certificatesresolvers.mytlschallenge.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - "./letsencrypt:/letsencrypt"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.11
+    environment:
+      COLLECTOR_ZIPKIN_HTTP_PORT: 9411
+    ports:
+      - "5775:5775/udp"
+      - "6831:6831/udp"
+      - "6832:6832/udp"
+      - "5778:5778"
+      - "16686:16686"
+      - "14268:14268"
+      - "9411:9411"
+    labels:
+     - traefik.enable=true
+     - traefik.port=16686
+     - traefik.backend=jaeger
+     - traefik.frontend.rule=Host:jaeger.docker.localhost
+
+  whoami:
+    image: "containous/whoami"
+    container_name: "simple-service"
+    restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.whoami.rule=Host(`beveradb.com`)"
+      - "traefik.http.routers.whoami.entrypoints=websecure"
+      - "traefik.http.routers.whoami.tls.certresolver=mytlschallenge"
+      # middleware redirect  
+      #- "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"  
+      # global redirect to https  
+      #- "traefik.http.routers.redirs.rule=hostregexp(`{host:.+}`)"  
+      #- "traefik.http.routers.redirs.entrypoints=web"  
+      #- "traefik.http.routers.redirs.middlewares=redirect-to-https"  
+
+  homeareainfo:
+    image: "homeareainfo"
+    container_name: "homeareainfo"
+    restart: always
+    environment:
+      - MAPBOX_ACCESS_TOKEN
+      - TRAVELTIME_API_KEY
+      - TRAVELTIME_APP_ID
+      - GMAPS_API_KEY
+      - HOMEAREA_DEBUG
+    volumes:
+      - /root/hah-data/datasets:/app/datasets
+      - /root/hah-data/caches:/app/caches
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.homeareainfo.rule=Host(`homearea.info`)"
+      - "traefik.http.routers.homeareainfo.entrypoints=websecure"
+      - "traefik.http.routers.homeareainfo.tls.certresolver=mytlschallenge"
+      # middleware redirect  
+      #- "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"  
+      # global redirect to https  
+      #- "traefik.http.routers.redirs.rule=hostregexp(`{host:.+}`)"  
+      #- "traefik.http.routers.redirs.entrypoints=web"  
+      #- "traefik.http.routers.redirs.middlewares=redirect-to-https"
+
+  i2p:
+    image: geti2p/i2p
+    container_name: i2p
+    restart: always
+    ports:
+      - 2827:2827 # — BOB
+      - 4444:4444 #— eepSite proxy
+      - 4444:4444/udp #— eepSite proxy
+      - 6668:6668 #— Irc2P proxy
+      - 7650:7650 #— I2PControl
+      - 7654:7654 #— I2CP
+      - 7655:7655 #— SAM (UDP)
+      - 7656:7656 #— SAM (TCP)
+      - 7657:7657 #— Router console
+      - 7658:7658 #— eepSite
+      - 7659:7659 #— SMTP
+      - 7660:7660 #— POP3
+      - 7661:7661 #— I2P-Bote SMTP
+      - 7662:7662 #— I2P-Bote IMAP / Zzzot
+      - 8998:8998 #— Monotone Proxy
+      - 8998:8998/udp #— Monotone Proxy
+      - 21774:21774 # TCP+UDP public port
+      - 21774:21774/udp # TCP+UDP public port
+    volumes:
+      - /root/i2p-data:/var/lib/i2p
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.homeareainfo.rule=Host(`i2p.beveradb.com`)"
+      - "traefik.http.routers.homeareainfo.entrypoints=websecure"
+      - "traefik.http.routers.homeareainfo.tls.certresolver=mytlschallenge"
+
+
