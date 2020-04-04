@@ -3,4 +3,6 @@ rutorrent-config/log
 rutorrent-config/rutorrent/profiles/settings/tasks
 rutorrent-config/rutorrent/profiles/settings/httprpc
 rutorrent-config/rtorrent/rtorrent_sess
+rutorrent-config/rutorrent/profiles/settings/trafic
+rutorrent-config/rutorrent/profiles/settings/accounts
 
