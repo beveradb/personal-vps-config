@@ -6,6 +6,13 @@ server {
     listen 80 default_server;
     server_name _;
 
+    satisfy any;
+
+    allow 172.24.0.0/24;
+
+    auth_basic           "AB Lon";
+    auth_basic_user_file /config/nginx/htpasswd;
+
     root /app/rutorrent;
     index index.php index.html index.htm;
 
@@ -43,10 +50,10 @@ server {
     server_name lon.beveradb.com;
     server_tokens off;
 
-    ssl_certificate /home/andrew/config/rutorrent-config/certbot/conf/live/lon.beveradb.com/fullchain.pem;
-    ssl_certificate_key /home/andrew/config/rutorrent-config/certbot/conf/live/lon.beveradb.com/privkey.pem;
-    include /home/andrew/config/rutorrent-config/certbot/conf/options-ssl-nginx.conf;
-    ssl_dhparam /home/andrew/config/rutorrent-config/certbot/conf/ssl-dhparams.pem;
+    ssl_certificate /config/certbot/conf/live/lon.beveradb.com/fullchain.pem;
+    ssl_certificate_key /config/certbot/conf/live/lon.beveradb.com/privkey.pem;
+    include /config/certbot/conf/options-ssl-nginx.conf;
+    ssl_dhparam /config/certbot/conf/ssl-dhparams.pem;
 
     location / {
         proxy_pass  http://lon.beveradb.com;
