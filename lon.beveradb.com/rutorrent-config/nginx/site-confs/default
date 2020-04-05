@@ -2,16 +2,16 @@ upstream backendrtorrent {
     server unix:/run/php/.rtorrent.sock;
 }
 
+satisfy any;
+
+allow 172.24.0.0/24;
+
+auth_basic           "AB Lon";
+auth_basic_user_file /config/nginx/htpasswd;
+
 server {
     listen 80 default_server;
     server_name _;
-
-    satisfy any;
-
-    allow 172.24.0.0/24;
-
-    auth_basic           "AB Lon";
-    auth_basic_user_file /config/nginx/htpasswd;
 
     root /app/rutorrent;
     index index.php index.html index.htm;
