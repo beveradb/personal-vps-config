@@ -25,3 +25,17 @@ dht_port = 6881
 # scgi_port = 0.0.0.0:5000
 encoding_list = UTF-8
 # system.umask.set = 022
+
+network.max_open_files.set = 2024
+network.http.max_open.set = 1012
+pieces.memory.max.set = 20000M
+network.xmlrpc.size_limit.set = 4M
+network.max_open_sockets.set = 1024
+throttle.global_up.max_rate.set_kb = 0
+throttle.global_down.max_rate.set_kb = 0
+pieces.preload.type.set = 1
+pieces.preload.min_size.set = 262144
+pieces.preload.min_rate.set = 5120
+network.send_buffer.size.set = 16M
+network.receive_buffer.size.set = 4M
+
