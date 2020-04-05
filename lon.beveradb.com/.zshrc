@@ -101,6 +101,8 @@ source $ZSH/oh-my-zsh.sh
 alias rutorrentlogs="tail -f /home/andrew/config/rutorrent-config/log/nginx/*log /home/andrew/config/rutorrent-config/log/php/*.log /home/andrew/config/rutorrent-config/log/rtorrent/*.log /home/andrew/config/rutorrent-config/log/rutorrent/*.log"
 
 alias restartrutorrent="docker-compose -f /home/andrew/config/docker-compose.yml down; docker-compose -f /home/andrew/config/docker-compose.yml up -d; docker logs -f rutorrent"
+alias stoprutorrent="docker-compose -f /home/andrew/config/docker-compose.yml down"
 
+alias viewrtorrent="docker exec -it rutorrent screen -r"
 
 
