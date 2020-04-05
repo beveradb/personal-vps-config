@@ -2,7 +2,7 @@
 version: "2"
 services:
   rutorrent:
-    image: linuxserver/rutorrent
+    image: linuxserver/rutorrent:latest
     container_name: rutorrent
     environment:
       - PUID=1000
