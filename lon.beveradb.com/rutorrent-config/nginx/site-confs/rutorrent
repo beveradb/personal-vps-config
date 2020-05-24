@@ -1,0 +1,56 @@
+map $http_user_agent $auth_type {
+    default "AB Lon Restricted";
+    ~^Kodi "off"; # Home: Kodi on Android TV
+    ~beveradb "off"; # Andrew laptop: Chrome user-agent string added by "User-Agent Switcher" addon
+    ~A6013 "off"; # Andrew phone: OnePlus 6t
+    ~GM1917 "off"; # Lindsay phone: Oneplus 7 Pro
+}
+
+upstream backendrtorrent {
+    server unix:/run/php/.rtorrent.sock;
+}
+
+server {
+	listen 80;
+	listen 443 ssl;
+	server_name r.beveradb.com;
+
+    	ssl_certificate /config/certbot/conf/live/r.beveradb.com/fullchain.pem;
+    	ssl_certificate_key /config/certbot/conf/live/r.beveradb.com/privkey.pem;
+    	include /config/certbot/conf/options-ssl-nginx.conf;
+    	ssl_dhparam /config/certbot/conf/ssl-dhparams.pem;
+
+	root /app/rutorrent;
+	index index.php index.html index.htm;
+
+        access_log /config/log/nginx/ru.access.log;
+        error_log /config/log/nginx/ru.error.log;
+
+	satisfy any;
+
+        allow 172.24.0.0/24;
+
+        auth_basic $auth_type; 
+	auth_basic_user_file /config/nginx/htpasswd;
+
+        location /.well-known/acme-challenge/ {
+                root /config/certbot/www;
+        }
+
+	location / {
+        	location ~ .php$ {
+           		fastcgi_split_path_info ^(.+\.php)(.*)$;
+            		fastcgi_pass 127.0.0.1:9000;
+            		fastcgi_index index.php;
+            		include /etc/nginx/fastcgi_params;
+        	}
+    	}
+
+   	location /RPC2 {
+        	access_log /config/log/nginx/rutorrent.rpc2.access.log;
+        	error_log /config/log/nginx/rutorrent.rpc2.error.log;
+        	include /etc/nginx/scgi_params;
+        	scgi_pass backendrtorrent;
+    	}
+}
+

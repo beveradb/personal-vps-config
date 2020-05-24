@@ -1,10 +1,11 @@
 lon.beveradb.com/rutorrent-config/log
-lon.beveradb.com/rutorrent-config/rtorrent/rtorrent_sess
+lon.beveradb.com/rutorrent-config/rtorrent/rtorrent_sess/
 lon.beveradb.com/rutorrent-config/rutorrent/profiles/history_data.dat
-lon.beveradb.com/rutorrent-config/rutorrent/profiles/torrents/*
-lon.beveradb.com/rutorrent-config/rutorrent/profiles/settings/*
-lon.beveradb.com/rutorrent-config/rutorrent/profiles/users/andrew/settings/*
-lon.beveradb.com/rutorrent-config/rutorrent/profiles/users/andrew/torrents/*
-lon.beveradb.com/rutorrent-config/certbot/conf
+lon.beveradb.com/rutorrent-config/rutorrent/profiles/torrents/
+lon.beveradb.com/rutorrent-config/rutorrent/profiles/settings/
+lon.beveradb.com/rutorrent-config/rutorrent/profiles/users/andrew/settings/
+lon.beveradb.com/rutorrent-config/rutorrent/profiles/users/andrew/torrents/
+lon.beveradb.com/rutorrent-config/certbot/conf/
+lon.beveradb.com/plex-config/Library/
 *.pem
 

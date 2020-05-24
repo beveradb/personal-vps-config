@@ -1,66 +1,47 @@
-upstream backendrtorrent {
-    server unix:/run/php/.rtorrent.sock;
+map $http_user_agent $auth_type {
+    default "AB Lon Restricted";
+    ~^Kodi "off";
+    ~beveradb "off";
+    ~A6013 "off";
 }
 
-satisfy any;
-
-allow 172.24.0.0/24;
-
-auth_basic           "AB Lon";
-auth_basic_user_file /config/nginx/htpasswd;
-
 server {
-    listen 80 default_server;
-    server_name _;
+	listen 80;
+	listen 443 ssl;
 
-    root /app/rutorrent;
-    index index.php index.html index.htm;
+	server_name files.beveradb.com a.beveradb.com lon.beveradb.com beveradb.com a.beveridge.uk;
 
-    client_max_body_size 0;
+	ssl_certificate /config/certbot/conf/live/a.beveradb.com/fullchain.pem;
+	ssl_certificate_key /config/certbot/conf/live/a.beveradb.com/privkey.pem;
+	include /config/certbot/conf/options-ssl-nginx.conf;
+	ssl_dhparam /config/certbot/conf/ssl-dhparams.pem;
 
-    server_tokens off;
+	root /downloads/completed;
+	
+	location / {
+		autoindex on;
+		autoindex_exact_size off;
 
-    location /.well-known/acme-challenge/ {
-        root /config/certbot/www;
-    }
-
-#    location / {
-#        return 301 https://$host$request_uri;
-#    }
-
-    location / {
-        location ~ .php$ {
-            fastcgi_split_path_info ^(.+\.php)(.*)$;
-            fastcgi_pass 127.0.0.1:9000;
-            fastcgi_index index.php;
-            include /etc/nginx/fastcgi_params;
+		dav_access user:rw group:r all:r;
+		dav_methods PUT DELETE MKCOL COPY MOVE;
         }
-    }
 
-    location /RPC2 {
-        access_log /config/log/nginx/rutorrent.rpc2.access.log;
-        error_log /config/log/nginx/rutorrent.rpc2.error.log;
-        include /etc/nginx/scgi_params;
-        scgi_pass backendrtorrent;
-    }
-}
+        access_log /config/log/nginx/files.access.log;
+        error_log /config/log/nginx/files.error.log;
 
-server {
-    listen 443 ssl;
-    server_name lon.beveradb.com;
-    server_tokens off;
+	client_max_body_size 0;
+	server_tokens off;
+	
+	satisfy any;
 
-    ssl_certificate /config/certbot/conf/live/lon.beveradb.com/fullchain.pem;
-    ssl_certificate_key /config/certbot/conf/live/lon.beveradb.com/privkey.pem;
-    include /config/certbot/conf/options-ssl-nginx.conf;
-    ssl_dhparam /config/certbot/conf/ssl-dhparams.pem;
+	allow 172.24.0.0/24;
 
-    location / {
-        proxy_pass  http://lon.beveradb.com;
-        proxy_set_header    Host                $http_host;
-        proxy_set_header    X-Real-IP           $remote_addr;
-        proxy_set_header    X-Forwarded-For     $proxy_add_x_forwarded_for;
-    }
+	auth_basic $auth_type;
+	auth_basic_user_file /config/nginx/htpasswd;
+
+	location /.well-known/acme-challenge/ {
+        	root /config/certbot/www;
+	}
 }
 
 

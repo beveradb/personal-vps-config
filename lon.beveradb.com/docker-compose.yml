@@ -10,6 +10,7 @@ services:
     volumes:
       - /home/andrew/personal-vps-config/lon.beveradb.com/rutorrent-config:/config
       - /home/andrew/torrents:/downloads
+      - /home/andrew/webroots:/webroots
     ports:
       - 80:80
       - 443:443
@@ -19,9 +20,51 @@ services:
     restart: unless-stopped
   certbot:
     image: certbot/certbot
+    container_name: certbot
     restart: unless-stopped
     volumes:
       - /home/andrew/personal-vps-config/lon.beveradb.com/rutorrent-config/certbot/conf:/etc/letsencrypt
       - /home/andrew/personal-vps-config/lon.beveradb.com/rutorrent-config/certbot/www:/var/www/certbot
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+  plex:
+    image: linuxserver/plex
+    container_name: plex
+    network_mode: host
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - VERSION=docker
+      - UMASK_SET=022 #optional
+      - PLEX_CLAIM=claim-AnsrAh3X2e6s-C_3cP24
+    volumes:
+      - /home/andrew/config/plex-config:/config
+      - /home/andrew/torrents/completed/TV:/tv
+      - /home/andrew/torrents/completed/Movies:/movies
+    restart: unless-stopped
+  tor:
+    image: strm/tor
+    restart: unless-stopped
+    container_name: tor
+    depends_on:
+      - rutorrent
+    environment:
+        LISTEN_PORT: "80"
+        REDIRECT: "rutorrent:80"
+        PRIVATE_KEY: |
+          -----BEGIN RSA PRIVATE KEY-----
+          MIICXgIBAAKBgQC+N+GHDixEtbb/UnuO+iab1wc+Q8qB3wByfkMEDkw9SwFcy+Dg
+          yJ/m44W2K6M/HO7DL0B0sxvXg+wGm+JJT70/mWQkjB9XoLjoywsvMDgTOtIiLlS0
+          PQfbueyrVPcVryn2BzoCzNs1U1lA9DmYj8GPb/Gzv73E0yWnswdxOKsBZwIEAwmx
+          CwKBgA9NrB3F488AdQz5a8PDC+nw2mMUDGCAkrQPigtZUMOFcphg83TprPA8y/AL
+          GuWkU7Kqr3YGLQ0+HxAKuVPApKqKKNhkGV4lYyPzxkENdUcdWKiTaZG444i6uLqW
+          LeLIHa7hktry6fAeReoDLkMX8qAYp45lL5T/MDktW4usdDhHAkEA+xIQZNIwEzfU
+          I4TaAjlJh2XVHcvR1oQx0IryhB5ihIBjCWtjL6dphETX7bvd20h8LdMLzw3WIaz3
+          5iyn0oWX5QJBAMHz9cDpQ5YOXyu8e29+gA8auHYcTFEkCxF7cdb03twEfKB/i3v3
+          wbm7RL3DD2Kw653/qdHWdyfdMKgNznn/x1sCQQCyycXxut15qoe4Y1ah/7ZpFgFT
+          RiUXUdgS/BoTaGTwpFI/M6Zoa1WmveuhJkL0HkPVO4j6ZaDfz1Vkum72LfMXAkEA
+          o4gXvGmoLhtULf3EQNoD79cEw9e67Jly2yLkt/Tx11PQq0OeL/Jl5BVs53FWvQD2
+          7qBpmr8VG/RcvaDu5l2AQQJAKTUqm1ONEO1LmOmZ6yGHagP6K5XPXctW+FcQ11z4
+          bDZORyoMdsj1mFtFUo85oFmoUppBjSXdXiN+98DP4nhonw==
+          -----END RSA PRIVATE KEY-----
+
 
