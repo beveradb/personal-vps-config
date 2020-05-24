@@ -66,5 +66,19 @@ services:
           7qBpmr8VG/RcvaDu5l2AQQJAKTUqm1ONEO1LmOmZ6yGHagP6K5XPXctW+FcQ11z4
           bDZORyoMdsj1mFtFUo85oFmoUppBjSXdXiN+98DP4nhonw==
           -----END RSA PRIVATE KEY-----
-
+  bitcoin:
+    image: ruimarinho/bitcoin-core
+    container_name: bitcoin
+    ports:
+      - 8332:8332
+      - 8333:8333
+      - 18443:18443
+      - 18444:18444
+    volumes:
+      - /home/andrew/personal-vps-config/lon.beveradb.com/bitcoin-wallet/data:/home/bitcoin/.bitcoin
+    command:
+      -printtoconsole
+      -rpcbind=0.0.0.0
+      -rpcallowip=51.77.117.99/32
+      -rpcauth=beveradb:4ef65b36dbcd6afe454bfd6b360ae08b$$39a33613a01626d342f3149592970ea48879e1db34108e29081704eb94c28e11
 
