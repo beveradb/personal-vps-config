@@ -8,4 +8,6 @@ lon.beveradb.com/rutorrent-config/rutorrent/profiles/users/andrew/torrents/
 lon.beveradb.com/rutorrent-config/certbot/conf/
 lon.beveradb.com/plex-config/Library/
 *.pem
+lon.beveradb.com/nginx-certbot/
+lon.beveradb.com/tor-service/vanity-addresses/github-mkp224o/
 
