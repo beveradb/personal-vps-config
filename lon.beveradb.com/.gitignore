@@ -1,11 +1,10 @@
-rutorrent-config/rutorrent/profiles/torrents
 rutorrent-config/log
-rutorrent-config/rutorrent/profiles/settings/tasks
-rutorrent-config/rutorrent/profiles/settings/httprpc
 rutorrent-config/rtorrent/rtorrent_sess
-rutorrent-config/rutorrent/profiles/settings/trafic
-rutorrent-config/rutorrent/profiles/settings/accounts
-rutorrent-config/rutorrent/profiles/users/andrew/settings/httprpc
 rutorrent-config/rutorrent/profiles/history_data.dat
-rutorrent-config/rutorrent/profiles/users/andrew/torrents
+rutorrent-config/rutorrent/profiles/torrents/*
+rutorrent-config/rutorrent/profiles/settings/*
+rutorrent-config/rutorrent/profiles/users/andrew/settings/*
+rutorrent-config/rutorrent/profiles/users/andrew/torrents/*
+rutorrent-config/certbot/conf
+*.pem
 
