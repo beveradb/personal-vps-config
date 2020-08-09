@@ -1,0 +1,16 @@
+version: "3.3"
+
+services:
+
+  homeareainfo:
+    image: "beveradb/homeareainfo:latest"
+    container_name: "homeareainfo"
+    restart: always
+    ports:
+      - 8080:80
+    env_file:
+      - /opt/bitnami/apps/andrewother/.env
+    volumes:
+      - /opt/bitnami/apps/andrewother/hah-data/datasets:/app/datasets
+      - /opt/bitnami/apps/andrewother/hah-data/caches:/app/caches
+
