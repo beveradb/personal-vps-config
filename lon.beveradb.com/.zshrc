@@ -106,4 +106,6 @@ alias stoprutorrent="docker-compose -f /home/andrew/config/docker-compose.yml rm
 
 alias viewrtorrent="docker exec -it rutorrent screen -r"
 
+alias nginxconfig="cd /home/andrew/config/rutorrent-config/nginx/site-confs"
+alias restartnginx="docker exec -it rutorrent /usr/sbin/nginx -c /config/nginx/nginx.conf -s reload"
 

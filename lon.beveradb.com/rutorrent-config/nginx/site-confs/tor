@@ -1,0 +1,29 @@
+server {
+	listen 80;
+	server_name andrewiozykdwsex.onion;
+
+        root /tor;
+
+        location / {
+                autoindex on;
+                autoindex_exact_size off;
+        }
+
+        access_log /config/log/nginx/tor.access.log;
+        error_log /config/log/nginx/tor.error.log;
+
+        client_max_body_size 0;
+        server_tokens off;
+
+        satisfy any;
+
+        allow 172.24.0.0/24;
+
+	location /private {
+                autoindex on;
+                autoindex_exact_size off;
+        	
+		auth_basic "Onionland Private";
+        	auth_basic_user_file /config/nginx/tor-m7TAai26mVpjCMQ80ysU-htpasswd;
+	}
+}

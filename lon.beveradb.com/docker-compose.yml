@@ -11,6 +11,8 @@ services:
       - /home/andrew/personal-vps-config/lon.beveradb.com/rutorrent-config:/config
       - /home/andrew/torrents:/downloads
       - /home/andrew/webroots:/webroots
+      - /home/andrew/onionsite:/tor
+      - /home/andrew/config/bitcoin-wallet/web-ui:/bitcoin-web-ui
     ports:
       - 80:80
       - 443:443
@@ -25,7 +27,7 @@ services:
     volumes:
       - /home/andrew/personal-vps-config/lon.beveradb.com/rutorrent-config/certbot/conf:/etc/letsencrypt
       - /home/andrew/personal-vps-config/lon.beveradb.com/rutorrent-config/certbot/www:/var/www/certbot
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew --no-random-sleep-on-renew; sleep 12h & wait $${!}; done;'"
   plex:
     image: linuxserver/plex
     container_name: plex
@@ -33,9 +35,9 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - VERSION=docker
-      - UMASK_SET=022 #optional
-      - PLEX_CLAIM=claim-AnsrAh3X2e6s-C_3cP24
+      - VERSION=latest
+      - UMASK_SET=022
+      - PLEX_CLAIM=claim-S4Vz7HDezTPznnDEyEWH
     volumes:
       - /home/andrew/config/plex-config:/config
       - /home/andrew/torrents/completed/TV:/tv
@@ -80,5 +82,8 @@ services:
       -printtoconsole
       -rpcbind=0.0.0.0
       -rpcallowip=51.77.117.99/32
+      -rpcallowip=10.0.0.0/8
+      -rpcallowip=172.16.0.0/12
+      -rpcallowip=192.168.0.0/16
       -rpcauth=beveradb:4ef65b36dbcd6afe454bfd6b360ae08b$$39a33613a01626d342f3149592970ea48879e1db34108e29081704eb94c28e11
 

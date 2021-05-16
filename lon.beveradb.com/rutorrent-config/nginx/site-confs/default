@@ -9,7 +9,7 @@ server {
 	listen 80;
 	listen 443 ssl;
 
-	server_name files.beveradb.com a.beveradb.com lon.beveradb.com beveradb.com a.beveridge.uk;
+	server_name files.beveradb.com a.beveradb.com beveradb.com a.beveridge.uk;
 
 	ssl_certificate /config/certbot/conf/live/a.beveradb.com/fullchain.pem;
 	ssl_certificate_key /config/certbot/conf/live/a.beveradb.com/privkey.pem;
@@ -37,9 +37,10 @@ server {
 	allow 172.24.0.0/24;
 
 	auth_basic $auth_type;
-	auth_basic_user_file /config/nginx/htpasswd;
+	auth_basic_user_file /config/nginx/andrew-andrew-htpasswd;
 
 	location /.well-known/acme-challenge/ {
+		auth_basic off;
         	root /config/certbot/www;
 	}
 }

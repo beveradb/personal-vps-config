@@ -1,0 +1,35 @@
+server {
+	listen 443 ssl;
+	server_name btc.beveradb.com;
+
+    	ssl_certificate /config/certbot/conf/live/btc.beveradb.com/fullchain.pem;
+    	ssl_certificate_key /config/certbot/conf/live/btc.beveradb.com/privkey.pem;
+    	include /config/certbot/conf/options-ssl-nginx.conf;
+    	ssl_dhparam /config/certbot/conf/ssl-dhparams.pem;
+
+	root /bitcoin-web-ui;
+	index index.php index.html index.htm;
+
+        access_log /config/log/nginx/bitcoin.access.log;
+        error_log /config/log/nginx/bitcoin.error.log;
+
+	satisfy any;
+
+        auth_basic "AB BTC Restricted";
+	auth_basic_user_file /config/nginx/andrew-btc-passwordinkeepass-htpasswd;
+
+        location /.well-known/acme-challenge/ {
+                root /config/certbot/www;
+                auth_basic off;
+        }
+
+	location / {
+        	location ~ .php$ {
+           		fastcgi_split_path_info ^(.+\.php)(.*)$;
+            		fastcgi_pass 127.0.0.1:9000;
+            		fastcgi_index index.php;
+            		include /etc/nginx/fastcgi_params;
+        	}
+    	}
+}
+
